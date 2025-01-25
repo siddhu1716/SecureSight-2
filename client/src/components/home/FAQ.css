@@ -1,0 +1,53 @@
+.faq-section {
+  padding: 80px 0;
+  background: #f4f4f4; /* Light gray background for the section */
+}
+
+.faq-title {
+  text-align: center;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  font-size: 2.5rem;
+  margin-bottom: 40px;
+  color: #333; /* Dark gray for the title */
+}
+
+.faq-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.faq-item {
+  background: #ffffff; /* White background for the boxes */
+  border-radius: 10px; /* Slightly rounded corners */
+  padding: 20px; /* Consistent padding */
+  margin-bottom: 20px; /* Space between items */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  transition: all 0.3s ease;
+}
+
+.faq-item:hover {
+  transform: translateY(-3px); /* Slight lift on hover */
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2); /* Darker shadow on hover */
+}
+
+.faq-question {
+  color: #222; /* Darker gray for the question text */
+  font-size: 18px; /* Slightly smaller font size */
+  margin-bottom: 10px; /* Space below the question */
+  font-family: 'Poppins', sans-serif;
+}
+
+.faq-answer {
+  color: #555; /* Medium gray for the answer text */
+  font-size: 16px; /* Consistent font size */
+  line-height: 1.5; /* Improved line height for readability */
+}
+
+/* Keyframes for gradient animation */
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+} 

@@ -1,0 +1,220 @@
+.navigation-boxes {
+  padding: 80px 0;
+  background: #F4F3ED;
+  position: relative;
+  overflow: hidden;
+}
+
+.nav-box {
+  display: block;
+  margin-bottom: 30px;
+  text-decoration: none;
+  color: #333;
+  perspective: 1000px;
+  height: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+.nav-box-inner {
+  background: rgba(255, 255, 255, 0.9);
+  padding: 40px 30px;
+  border-radius: 15px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
+  box-shadow: 0 10px 30px rgba(72, 130, 244, 0.1);
+  backdrop-filter: blur(10px);
+  height: 100%;
+  border: 1px solid rgba(72, 130, 244, 0.1);
+}
+
+.nav-box:hover .nav-box-inner {
+  transform: translateY(-10px) rotateX(10deg);
+  box-shadow: 0 20px 40px rgba(64, 112, 244, 0.3);
+  background: rgba(64, 112, 244, 0.1);
+  border-color: rgba(64, 112, 244, 0.5);
+}
+
+.icon-wrapper {
+  width: 70px;
+  height: 70px;
+  background: #4070f4;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 25px;
+  position: relative;
+  z-index: 1;
+  transition: all 0.5s ease;
+}
+
+.icon-wrapper i {
+  font-size: 32px;
+  color: #fff;
+  transition: all 0.5s ease;
+}
+
+.nav-box:hover .icon-wrapper {
+  transform: rotateY(180deg);
+  background: #2952c8;
+  box-shadow: 0 0 30px rgba(64, 112, 244, 0.5);
+}
+
+.nav-box h3 {
+  color: #333;
+  font-size: 24px;
+  margin-bottom: 15px;
+  position: relative;
+  z-index: 1;
+}
+
+.nav-box p {
+  color: #666;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 1;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.hover-content {
+  position: absolute;
+  bottom: 30px;
+  right: 30px;
+  opacity: 0;
+  transform: translateX(20px);
+  transition: all 0.5s ease;
+}
+
+.nav-box:hover .hover-content {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.arrow {
+  width: 40px;
+  height: 40px;
+  background: #4070f4;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.arrow i {
+  color: #fff;
+  font-size: 20px;
+}
+
+.nav-box:hover .arrow {
+  transform: scale(1.1);
+  box-shadow: 0 0 20px rgba(64, 112, 244, 0.5);
+}
+
+/* Enhanced glowing effect */
+.nav-box:hover .nav-box-inner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at center, rgba(64, 112, 244, 0.2) 0%, transparent 70%);
+  opacity: 0;
+  animation: glowPulse 2s infinite;
+}
+
+/* Add floating animation */
+.nav-box {
+  animation: floating 6s infinite;
+}
+
+.nav-box:nth-child(2) {
+  animation-delay: -2s;
+}
+
+.nav-box:nth-child(3) {
+  animation-delay: -4s;
+}
+
+@keyframes floating {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes glowPulse {
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.05);
+  }
+}
+
+/* Add particle background */
+.navigation-boxes::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(2px 2px at 20px 30px, #4F4F4F, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 40px 70px, #4F4F4F, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 50px 160px, #4F4F4F, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 90px 40px, #4F4F4F, rgba(0,0,0,0));
+  background-size: 200px 200px;
+  animation: stars 4s linear infinite;
+  opacity: 0.15;
+}
+
+@keyframes stars {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-200px); }
+}
+
+/* Responsive adjustments */
+@media (max-width: 991px) {
+  .nav-box-inner {
+    padding: 30px 20px;
+  }
+  
+  .icon-wrapper {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .icon-wrapper i {
+    font-size: 28px;
+  }
+  
+  .nav-box h3 {
+    font-size: 20px;
+  }
+}
+
+/* Fix for equal heights */
+.row {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.col-lg-4 {
+  display: flex;
+  margin-bottom: 30px;
+} 

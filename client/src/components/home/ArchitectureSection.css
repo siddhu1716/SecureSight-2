@@ -1,0 +1,237 @@
+.architecture-section {
+  padding: 100px 0;
+  background: #F4F3ED;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Stars background effect */
+.architecture-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(2px 2px at 20px 30px, #4F4F4F, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 40px 70px, #4F4F4F, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 50px 160px, #4F4F4F, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 90px 40px, #4F4F4F, rgba(0,0,0,0));
+  background-size: 200px 200px;
+  animation: stars 4s linear infinite;
+  opacity: 0.15;
+}
+
+.section-title h2 {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  font-size: 2.5rem;
+  margin-bottom: 40px;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+  background: linear-gradient(
+    300deg,
+    #FF6B6B,
+    #4ECDC4,
+    #45B7D1,
+    #6C5CE7
+  );
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientMove 8s ease infinite;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  display: inline-block;
+}
+
+/* Animated underline effect */
+.section-title h2::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -10px;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(
+    to right,
+    #FF6B6B,
+    #4ECDC4,
+    #45B7D1,
+    #6C5CE7
+  );
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.5s ease;
+  animation: underlineAnimate 8s linear infinite;
+}
+
+.section-title h2:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+@keyframes underlineAnimate {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes gradientMove {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.architecture-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.architecture-wrapper {
+  position: relative;
+  border-radius: 15px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 20px;
+  box-shadow: 0 10px 30px rgba(72, 130, 244, 0.1);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.architecture-image {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  transition: all 0.5s ease;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, rgba(72, 130, 244, 0.1), rgba(154, 128, 247, 0.1));
+  opacity: 0;
+  transition: all 0.4s ease;
+}
+
+/* Enhanced Hover Effects */
+.architecture-wrapper:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(72, 130, 244, 0.2);
+}
+
+.architecture-wrapper:hover .overlay {
+  opacity: 1;
+}
+
+.architecture-wrapper:hover .architecture-image {
+  transform: scale(1.02);
+}
+
+.architecture-wrapper::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  transition: 0.5s;
+}
+
+.architecture-wrapper:hover::before {
+  left: 100%;
+}
+
+.architecture-description {
+  margin-top: 30px;
+  text-align: center;
+  color: #333;
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@keyframes stars {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-200px); }
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .section-title h2 {
+    font-size: 2.3rem;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+@media (max-width: 992px) {
+  .section-title h2 {
+    font-size: 2.1rem;
+    text-align: center;
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .section-title h2 {
+    font-size: 1.9rem;
+    text-align: center;
+    padding: 0 15px;
+  }
+}
+
+@media (max-width: 576px) {
+  .section-title h2 {
+    font-size: 1.7rem;
+    text-align: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .architecture-section {
+    padding: 60px 0;
+  }
+  
+  .architecture-container {
+    padding: 20px;
+  }
+  
+  .section-title h2 {
+    font-size: 2rem;
+  }
+  
+  .architecture-description {
+    font-size: 14px;
+  }
+} 

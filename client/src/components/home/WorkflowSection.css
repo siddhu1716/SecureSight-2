@@ -1,0 +1,196 @@
+.workflow-section {
+  padding: 100px 0;
+  background: #F4F3ED;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Stars background effect */
+.workflow-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(2px 2px at 20px 30px, #4F4F4F, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 40px 70px, #4F4F4F, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 50px 160px, #4F4F4F, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 90px 40px, #4F4F4F, rgba(0,0,0,0));
+  background-size: 200px 200px;
+  animation: stars 4s linear infinite;
+  opacity: 0.15;
+}
+
+.section-title h2 {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  font-size: 2.5rem;
+  margin-bottom: 40px;
+  text-align: center;
+  background: linear-gradient(
+    300deg,
+    #ff6b6b,
+    #4882f4,
+    #9a80f7,
+    #ff6b6b
+  );
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientMove 8s ease infinite;
+  position: relative;
+  z-index: 1;
+}
+
+.workflow-container {
+  display: flex;
+  justify-content: center; /* Center alignment for all devices */
+  align-items: center;
+  gap: 30px; /* Space between boxes */
+  flex-wrap: nowrap; /* Prevent wrapping to keep in a single line */
+  overflow-x: auto; /* Allow horizontal scrolling on smaller devices */
+  padding: 20px 10px;
+  position: relative;
+  z-index: 1;
+}
+
+.workflow-step {
+  flex: 0 0 280px; /* Fixed width for consistency */
+  text-align: center;
+  text-decoration: none;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.step-content {
+  background: rgba(255, 255, 255, 0.9);
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(72, 130, 244, 0.1);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.icon-box {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(45deg, #4882f4, #9a80f7);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  transition: all 0.3s ease;
+}
+
+.icon-box i {
+  font-size: 32px;
+  color: #fff;
+  transition: all 0.3s ease;
+}
+
+.workflow-step h3 {
+  color: #333;
+  font-size: 20px;
+  margin-bottom: 15px;
+  font-family: 'Poppins', sans-serif;
+}
+
+.workflow-step p {
+  color: #666;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.connector {
+  position: absolute;
+  top: 50%;
+  right: -30px;
+  transform: translateY(-50%);
+  color: #4882f4;
+  font-size: 24px;
+  z-index: 2;
+}
+
+/* Hover Effects */
+.workflow-step:hover .step-content {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(72, 130, 244, 0.2);
+}
+
+.workflow-step:hover .icon-box {
+  transform: rotate(360deg);
+  box-shadow: 0 0 30px rgba(72, 130, 244, 0.3);
+}
+
+.step-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  transition: 0.5s;
+}
+
+.workflow-step:hover .step-content::before {
+  left: 100%;
+}
+
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes stars {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-200px); }
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .workflow-container {
+    gap: 20px;
+  }
+
+  .workflow-step {
+    flex: 0 0 250px; /* Adjust width for smaller screens */
+  }
+}
+
+@media (max-width: 768px) {
+  .workflow-container {
+    gap: 15px; /* Reduce gap */
+  }
+
+  .workflow-step {
+    flex: 0 0 220px; /* Smaller width */
+  }
+
+  .icon-box {
+    width: 60px;
+    height: 60px;
+  }
+
+  .icon-box i {
+    font-size: 24px;
+  }
+
+  .workflow-step h3 {
+    font-size: 18px;
+  }
+
+  .workflow-step p {
+    font-size: 14px;
+  }
+}

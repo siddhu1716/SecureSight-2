@@ -1,0 +1,153 @@
+.about-area {
+  position: relative;
+  background: #F4F3ED;
+  padding: 100px 0;
+  overflow: hidden;
+}
+
+.stars-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(2px 2px at 20px 30px, #4F4F4F, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 40px 70px, #4F4F4F, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 50px 160px, #4F4F4F, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 90px 40px, #4F4F4F, rgba(0,0,0,0));
+  background-size: 200px 200px;
+  animation: stars 4s linear infinite;
+  opacity: 0.15;
+}
+
+.about-pre-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 30px;
+  background: linear-gradient(
+    to right,
+    rgb(72, 130, 244),
+    rgb(154, 128, 247),
+    rgb(247, 247, 247),
+    rgb(72, 130, 244)
+  );
+  background-size: 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: background-pan 3s linear infinite;
+}
+
+.about-content {
+  position: relative;
+  z-index: 1;
+}
+
+.about-content p {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.hero-counter-area {
+  margin-top: 50px;
+  position: relative;
+  z-index: 1;
+}
+
+.counter-item {
+  text-align: center;
+  padding: 20px;
+}
+
+.count-text {
+  font-size: 2.5rem;
+  font-weight: 700;
+  background: linear-gradient(
+    to right,
+    rgb(72, 130, 244),
+    rgb(154, 128, 247)
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.counter-title {
+  font-size: 1rem;
+  color: #333;
+  display: block;
+}
+
+@keyframes stars {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-200px); }
+}
+
+@keyframes background-pan {
+  from {
+    background-position: 0% center;
+  }
+  to {
+    background-position: -200% center;
+  }
+}
+
+/* Media Queries */
+@media (max-width: 1200px) {
+  .about-area {
+    padding: 80px 0;
+  }
+  
+  .about-pre-title {
+    font-size: 1.8rem;
+  }
+}
+
+@media (max-width: 992px) {
+  .about-area {
+    padding: 60px 0;
+  }
+
+  .about-pre-title {
+    font-size: 1.6rem;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .hero-counter-area {
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .counter-item {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .about-area {
+    padding: 40px 0;
+  }
+
+  .about-content p {
+    font-size: 1rem;
+  }
+
+  .count-text {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .about-pre-title {
+    font-size: 1.4rem;
+  }
+
+  .counter-item {
+    padding: 10px;
+  }
+} 
