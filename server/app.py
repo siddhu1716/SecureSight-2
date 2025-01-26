@@ -30,11 +30,11 @@ app = Flask(__name__)
 
 # Twilio Credentials
 camera_label = 'Entrance Camera --->'
-account_sid = 'AC8836dfeb51a6f5ea7f0b97cf4e7b2696'
-auth_token = '165bdbc3c59a70a10aaf966662b9ac58'
-twilio_phone_number = 'whatsapp:+14155238886'
-recipient_phone_numbers = ['whatsapp:+919502152068']
-recipient_email=["shivanampalli@gmail.com"]
+account_sid = 'XXX'
+auth_token = 'XXX'
+twilio_phone_number = 'whatsapp:+xxx'
+recipient_phone_numbers = ['whatsapp:+XXX']
+recipient_email=["XXX@gmail.com"]
 client = Client(account_sid, auth_token)
 ocr = PaddleOCR(use_angle_cls=True, lang='en')
 lost_vehicles={}
@@ -78,7 +78,7 @@ def send_whatsapp_alert(alert_message, to, media_url=None):
         print(f"Error sending WhatsApp message: {e}")
 
 def send_email_with_attachment(recipient, subject, body, attachment_path):
-    sender_email = "shivanampalli@gmail.com"
+    sender_email = "XXX@gmail.com"
     sender_password = "hahw qcjh letl sbuq"
 
     # Create the email
