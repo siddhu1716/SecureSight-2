@@ -25,6 +25,7 @@ from email.mime.base import MIMEBase
 from email import encoders
 import os
 from email.mime.image import MIMEImage
+import numpy as np
 
 app = Flask(__name__)
 
@@ -40,6 +41,11 @@ ocr = PaddleOCR(use_angle_cls=True, lang='en')
 lost_vehicles={}
 Debug=True
 ALLOWED_EXTENSIONS = {'.mp4', '.avi', '.mov', '.mkv'}  
+
+# Initialize DynamoDB
+dynamodb = boto3.resource('dynamodb')
+table = dynamodb.Table('LostVehicles')  # Replace with your table name
+
 
 def upload_to_s3(file_path, bucket='ak-hackathon-bucket'):
     file_name = os.path.basename(file_path)  # Extracts just the file name
@@ -260,17 +266,27 @@ def get_owner_details():
     owner_name = data.get('name')
     license_plate = data.get('license')
     contact_number = data.get('contact_number')
+    email=data.get("email"),
+    time_of_theft=data.get("time")
     description = data.get('description')
+
     if not owner_name or not license_plate or not contact_number:
         return jsonify({"error": "Missing required fields"}), 400
-    lost_vehicles[license_plate] = {
-        "name": owner_name,
-        "license_plate":license_plate,
-        "description":description,
-        "time_reported": datetime.time(),
-        "contact": f"whatsapp:+91{contact_number}"
-    }
-    return jsonify({"message": "Owner details added successfully"}), 200
+    try:
+        # Add details to DynamoDB
+        table.put_item(
+            Item={
+                "license_plate": license_plate,
+                "name": owner_name,
+                "description": description,
+                "time_reported": time_of_theft,
+                "contact": f"whatsapp:+91{contact_number}",
+                "email":email,
+            }
+        )
+        return jsonify({"message": "Owner details added successfully"}), 200
+    except Exception as e:
+        return jsonify({"error": f"Error saving to DynamoDB: {e}"}), 500
     
 @app.route('/api/get_model_detected_report', methods=['POST'])
 def get_model_detection_report():
@@ -337,6 +353,12 @@ def get_model_detection_report():
         return jsonify({"error": "Unexpected error occurred", "details": str(e)}), 500
     finally:
         clean_results(model_path)
+
+
+class SecureSight():
+    def __init__(self):
+        pass
+    #hre we update the lost vechiles as they come from the frontend 
 
 
 if __name__ == '__main__':
