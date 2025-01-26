@@ -100,7 +100,7 @@ def save_metadata_to_dynamodb(license_number, s3_url, location):
     Save metadata to DynamoDB with a TTL for automatic expiration.
     """
     dynamodb = boto3.resource('dynamodb')
-    table = dynamodb.Table('YourTableName')  # Replace with your actual table name
+    table = dynamodb.Table('const_monitering_table')  # Replace with your actual table name
     try:
         expiration_time = int((datetime.utcnow() + timedelta(days=6)).timestamp())  # 6 days from now
         table.put_item(
@@ -116,6 +116,31 @@ def save_metadata_to_dynamodb(license_number, s3_url, location):
         print(f"Error saving to DynamoDB: {e}")
 
 
+def delete_metadata_from_dynamodb(license_number):
+    """
+    Delete metadata from DynamoDB.
+
+    Parameters:
+    - license_number (str): The unique identifier for the file in S3.
+
+    Returns:
+    - bool: True if the deletion was successful, False otherwise.
+    """
+    dynamodb = boto3.resource('dynamodb')
+    table = dynamodb.Table('const_monitering_table')
+    try:
+        response = table.delete_item(
+            Key={'license_number': license_number}
+        )
+        # Check if the deletion was successful
+        if response.get('ResponseMetadata', {}).get('HTTPStatusCode') == 200:
+            return True
+        return False
+    except Exception as e:
+        print(f"Error deleting from DynamoDB: {e}")
+        return False
+
+
 def get_metadata_from_dynamodb(license_number):
     """
     Retrieve metadata from DynamoDB.
@@ -127,7 +152,7 @@ def get_metadata_from_dynamodb(license_number):
     - dict: The metadata if found, or None if not found or error occurs.
     """
     dynamodb = boto3.resource('dynamodb')
-    table = dynamodb.Table('YourTableName') 
+    table = dynamodb.Table('const_monitering_table') 
     try:
         response = table.get_item(Key={'license_number': license_number})
         return response.get('Item', None)
@@ -252,24 +277,41 @@ def get_owner_details(lost_vehicle_number):
         print(f"Error retrieving details from DynamoDB: {e}")
         return None
 
+def check_and_add(license_key,owner_name,contact_number,email):
+    #we pass lost vechile number to check_if present and it returns true if sent false if not sent then we will search if it appears next 
+    #this is something that should be implemented in get_owner details api
+    data=get_metadata_from_dynamodb(license_key)
+    if data:
+        alert_message = (f"Alert: Vehicle of number plate {license_key} has detected in our past DB "
+                            f"Owner: {owner_name} ({contact_number})")
+        send_whatsapp_alert(alert_message, contact_number, media_url=data)
+        send_email_with_attachment(email, "Last Seen Lost Vechile Location", alert_message ,"/Users/apple/Desktop/licenseplate/test.png")
+        delete_metadata_from_dynamodb(license_key)
+        return True
+    else:
+        print("vechile is not present in our DB we will intimte you if we find it")
+        
 
 def check_if_present_in_database(lost_vechile_number):
-    # we should also have the number plate to vechile owners details database
-    # lost_vehicles=["AP2035","TS6765"]
-    owner_details=get_owner_details(lost_vechile_number)
-    data=get_metadata_from_dynamodb(lost_vechile_number)
-    if data:
-        alert_message = (f"Alert: Vehicle of number plate {lost_vechile_number} has detected. "
-                            f"Owner: {owner_details['name']} ({owner_details['contact_number']})")
-        send_whatsapp_alert(alert_message, owner_details['contact_number'], media_url=data)
-        send_email_with_attachment(owner_details['email'], "Last Seen Lost Vechile Location", alert_message ,"/Users/apple/Desktop/licenseplate/test.png")
+    try:
+        # we should also have the number plate to vechile owners details database
+        # lost_vehicles=["AP2035","TS6765"]
+        owner_details=get_owner_details(lost_vechile_number)
+        data=get_metadata_from_dynamodb(lost_vechile_number)
+        if data:
+            alert_message = (f"Alert: Vehicle of number plate {lost_vechile_number} has detected. "
+                                f"Owner: {owner_details['name']} ({owner_details['contact_number']})")
+            send_whatsapp_alert(alert_message, owner_details['contact_number'], media_url=data)
+            send_email_with_attachment(owner_details['email'], "Last Seen Lost Vechile Location", alert_message ,"/Users/apple/Desktop/licenseplate/test.png")
+            delete_metadata_from_dynamodb(lost_vechile_number)
+            return True
+        else:
+            return False
 
-
-        # recipient_phone_numbers = ['whatsapp:+XXX']
-        # recipient_email=["XXX@gmail.com"]
-
-def report_to_user():
-    lost_vehicles=["AP2035","TS6765"]
+            # recipient_phone_numbers = ['whatsapp:+XXX']
+            # recipient_email=["XXX@gmail.com"]
+    except Exception as e:
+        print("error in the check if present database")
 
 set_s3_lifecycle(bucket='ak-hackathon-bucket')
 
