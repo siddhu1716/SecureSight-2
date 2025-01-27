@@ -317,69 +317,68 @@ def check_if_present_in_database(lost_vechile_number):
 set_s3_lifecycle(bucket='ak-hackathon-bucket')
 
 
-alert_cooldown = 45  
-last_alert_time = {"gun": 0, "knife": 0}
 recipient_phone_numbers=[]
 
-def moniterng_abnormal():
-    # read frames
-    location="front gate"
+def monitoring_abnormal():
+    # Initialize camera and variables
+    location = "front gate"
     frame_nmr = -1
     ret = True
+    last_alert_time = {"gun": 0, "knife": 0}
+    alert_cooldown = 60  # 60 seconds
+    cap = cv2.VideoCapture(0)  # Change to file path if using a video file
+
     while ret:
         frame_nmr += 1
         ret, frame = cap.read()
-        frame = cv2.resize(frame, (640, 360))
-        if ret:
-            results[frame_nmr] = {}
-            # detect vehicles
-            detections = coco_model(frame)[0]
-            detections_ = []
-            for detection in detections.boxes.data.tolist():
-                x1, y1, x2, y2, score, class_id = detection
-                if int(class_id) in persons:
-                    detections_.append([x1, y1, x2, y2, score])
-
-            # track vehicles
-            track_ids = mot_tracker.update(np.asarray(detections_))
-
-            # detect license plates
-            current_time = time.time()
-            abnormal_event = abnormal_detector(frame)[0]
-            for d in abnormal_event.boxes.data.tolist():
-                x1, y1, x2, y2, score, class_id = detection
-                class_id = int(class_id)
-                # Draw bounding box
-                color = (0, 255, 0) if class_id == 2 else (0, 0, 255)  # Green for person, red for weapons
-                cv2.rectangle(frame, (x1, y1), (x2, y2), color, 2)
-
-                # Add label
-                label = "Person" if class_id == 2 else "Gun" if class_id == 0 else "Knife"
-                cv2.putText(frame, label, (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
-
-                # Determine if an alert should be sent
-                if class_id == 0 and (current_time - last_alert_time["gun"] > alert_cooldown):
-                    alert_message = f"{location} A potential threat has been detected involving a firearm near university area. Stay alert and avoid the vicinity if possible. Security is being notified."
-                    last_alert_time["gun"] = current_time
-                elif class_id == 1 and (current_time - last_alert_time["knife"] > alert_cooldown):
-                    alert_message = f"{location} A potential threat has been detected involving a near university area. Stay alert and avoid the vicinity if possible. Security is being notified."                    
-                    last_alert_time["knife"] = current_time
-                else:
-                    continue  # Skip if within cooldown period
-                
-                # Save the frame only when sending an alert
-                file_name = f"alert_image_{datetime.now().strftime('%H_%M_%S')}.jpg"
-                cv2.imwrite(file_name, frame)
-
-                # Upload to S3 and get URL
-                media_url = upload_to_s3(file_name)
-
-                # Send WhatsApp alert if media_url is available
-                if media_url:
-                    for recipient in recipient_phone_numbers:
-                        send_whatsapp_alert(alert_message, recipient, media_url=media_url)
-        # Display the frame for visual feedback
-        cv2.imshow('Object Detection', frame)
-
-        if cv2.waitKey(1) & 0xFF == ord('q'):
+        if not ret:
             break
+        frame = cv2.resize(frame, (640, 360))
+        results = {}
+
+        # Detect vehicles/persons
+        detections = coco_model(frame)[0]
+        detections_ = []
+        for detection in detections.boxes.data.tolist():
+            x1, y1, x2, y2, score, class_id = detection
+            if int(class_id) in persons:
+                detections_.append([x1, y1, x2, y2, score])
+
+        # Track objects
+        track_ids = mot_tracker.update(np.asarray(detections_))
+
+        # Detect abnormal events
+        current_time = time.time()
+        abnormal_event = abnormal_detector(frame)[0]
+        for d in abnormal_event.boxes.data.tolist():
+            x1, y1, x2, y2, score, class_id = d
+            class_id = int(class_id)
+            color = (0, 255, 0) if class_id == 2 else (0, 0, 255)
+            cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), color, 2)
+
+            label = "Person" if class_id == 2 else "Gun" if class_id == 0 else "Knife"
+            cv2.putText(frame, label, (int(x1), int(y1) - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+
+            if class_id == 0 and (current_time - last_alert_time["gun"] > alert_cooldown):
+                alert_message = f"{location} A potential threat has been detected involving a firearm. Stay alert and avoid the vicinity if possible. Security is being notified."
+                last_alert_time["gun"] = current_time
+            elif class_id == 1 and (current_time - last_alert_time["knife"] > alert_cooldown):
+                alert_message = f"{location} A potential threat has been detected involving a knife. Stay alert and avoid the vicinity if possible. Security is being notified."
+                last_alert_time["knife"] = current_time
+            else:
+                continue
+
+            file_name = f"alert_image_{datetime.now().strftime('%H_%M_%S')}.jpg"
+            cv2.imwrite(file_name, frame)
+
+            media_url = upload_to_s3(file_name)
+            if media_url:
+                for recipient in recipient_phone_numbers:
+                    send_whatsapp_alert(alert_message, recipient, media_url=media_url)
+
+        cv2.imshow("Object Detection", frame)
+        if cv2.waitKey(1) & 0xFF == ord("q"):
+            break
+
+    cap.release()
+    cv2.destroyAllWindows()

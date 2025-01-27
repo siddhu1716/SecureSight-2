@@ -98,22 +98,45 @@ def upload_to_s3(file_path, license_number, location, additional_attributes=None
 def save_metadata_to_dynamodb(license_number, s3_url, location):
     """
     Save metadata to DynamoDB with a TTL for automatic expiration.
+    
+    Parameters:
+    - license_number (str): The unique identifier for the vehicle.
+    - s3_url (str): The URL of the file in S3.
+    - location (str): The location where the vehicle was detected.
     """
+    # Validate input
+    if not license_number or not s3_url or not location:
+        print("Invalid input: license_number, s3_url, and location are required.")
+        return False
+
+    # Initialize DynamoDB table
     dynamodb = boto3.resource('dynamodb')
-    table = dynamodb.Table('const_monitering_table')  # Replace with your actual table name
+    table_name = 'const_monitering_table'
+    table = dynamodb.Table(table_name)
+
     try:
-        expiration_time = int((datetime.utcnow() + timedelta(days=6)).timestamp())  # 6 days from now
+        # Calculate expiration time (6 days from now)
+        expiration_time = int((datetime.utcnow() + timedelta(days=6)).timestamp())
+        # Create a unique sort key by combining location and timestamp
+        timestamp = datetime.utcnow().isoformat()  # ISO format timestamp
+        sort_key = f"{location}#{timestamp}"  # Composite sort key
+
+         # Save item to DynamoDB
         table.put_item(
             Item={
-                'license_number': license_number,
-                's3_url': s3_url,
+                'license_number': license_number,   # Partition key
+                'location_timestamp': sort_key,    # Sort key
+                's3_url': s3_url,                  # Metadata
                 'location': location,
-                'timestamp': datetime.utcnow().isoformat(),  # For record-keeping
-                'expiration_time': expiration_time  # For TTL
+                'timestamp': timestamp,
+                'expiration_time': expiration_time  # TTL for auto-expiration
             }
         )
+        print(f"Metadata saved to DynamoDB for license_number: {license_number} at location: {location}")
+        return True
     except Exception as e:
         print(f"Error saving to DynamoDB: {e}")
+        return False
 
 
 def delete_metadata_from_dynamodb(license_number):
@@ -140,22 +163,25 @@ def delete_metadata_from_dynamodb(license_number):
         print(f"Error deleting from DynamoDB: {e}")
         return False
 
-
+    
 def get_metadata_from_dynamodb(license_number):
     """
-    Retrieve metadata from DynamoDB.
+    Retrieve all metadata for a specific license_number from DynamoDB.
 
     Parameters:
-    - license_number (str): The unique identifier for the file in S3.
+    - license_number (str): The unique identifier for the vehicle.
 
     Returns:
-    - dict: The metadata if found, or None if not found or error occurs.
+    - list: A list of metadata dictionaries if found, or an empty list if no records are found.
     """
     dynamodb = boto3.resource('dynamodb')
-    table = dynamodb.Table('const_monitering_table') 
+    table = dynamodb.Table('const_monitering_table')  # Replace with your table name
+    
     try:
-        response = table.get_item(Key={'license_number': license_number})
-        return response.get('Item', None)
+        response = table.query(
+            KeyConditionExpression=boto3.dynamodb.conditions.Key('license_number').eq(license_number)
+        )
+        return response.get('Items', [])  # Returns all matching items
     except Exception as e:
         print(f"Error retrieving from DynamoDB: {e}")
         return None
@@ -276,6 +302,11 @@ def get_owner_details(lost_vehicle_number):
     except Exception as e:
         print(f"Error retrieving details from DynamoDB: {e}")
         return None
+
+def Track_route(license_key):
+    
+    return
+
 
 def check_and_add(license_key,owner_name,contact_number,email):
     #we pass lost vechile number to check_if present and it returns true if sent false if not sent then we will search if it appears next 
