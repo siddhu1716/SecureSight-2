@@ -1,60 +1,62 @@
 # SecureSight-2
 
-Secure Sight is a safety-focused AI platform offering advanced solutions for public and personal security. Our core features include:
-1- Real-time Threat Detection: Using AI models like YOLO, we identify potential threats such as firearms or knives in live video feeds and send instant alerts via Twilio to designated contacts.
-2- Lost Vehicle Tracking: Leveraging AI and object recognition, we assist in locating lost or stolen vehicles by analyzing traffic footage and identifying registered vehicle details.
-3- With seamless integration, intuitive interfaces, and proactive alerts, Secure Sight ensures enhanced safety and security for individuals and communities.
+SecureSight-2 is a comprehensive AI-powered security platform that provides advanced solutions for public and personal safety through real-time threat detection and lost vehicle tracking capabilities.
 
+## Features
 
-Lost Vehicle Tracking System
+### Real-time Threat Detection
+- Utilizes YOLO AI models for identifying potential security threats
+- Monitors live video feeds for dangerous objects (firearms, weapons)
+- Sends instant alerts via Twilio integration to designated contacts
 
-Overview
-This repository contains the implementation of a Lost Vehicle Tracking System that leverages machine learning, OCR, and distributed workers to monitor, detect, and report lost or suspicious vehicles in real time. The system integrates live CCTV camera feeds, a lost vehicle form, and a report incident module to ensure quick and efficient tracking of vehicles across multiple locations.
+### Lost Vehicle Tracking System
+- AI-powered vehicle detection and recognition
+- Real-time monitoring through CCTV camera feeds
+- License plate recognition using Paddle OCR
+- Distributed worker system for efficient processing
+- Comprehensive alerting system for stakeholders
 
-Features
+## System Architecture
 
-Real-time Monitoring: Processes live camera feeds to detect vehicles and identify lost or suspicious activity.
-OCR Integration: Uses Paddle OCR for license plate recognition.
-Distributed Workers:
-Worker 1: Handles initial matching against the database (T1, T2).
-Worker 2: Matches entries in the database every 6 hours to ensure updates are processed.
-Worker 3: Sends alerts to users, police, or other relevant authorities if a match is found.
+### Distributed Workers
+1. **Worker 1**: Handles initial database matching (T1, T2)
+2. **Worker 2**: Performs periodic database matching every 6 hours
+3. **Worker 3**: Manages alert distribution to users and authorities
 
-Alerting System: Sends notifications for detected vehicles to: 
-Vehicle owners.
-Local police or hospitals in critical scenarios.
+### Database Structure
+- **T1 & T2**: Primary storage for vehicle information and incident reports
+- **T3**: Stores matched data and actionable insights
 
-Database Layers:
-T1 & T2: Stores initial vehicle information and incident reports.
-T3: Contains updated matches and actionable insights.
+### Front-End Components
+- Lost Vehicle Form
+- Incident Reporting Module
+- Real-time Monitoring Dashboard
 
-Front-End Interface:
-Lost Vehicle Form: For users to report missing vehicles.
-Report Incident: For users to report general incidents or suspicious activity.
+## Technology Stack
 
-Workflow
-Preprocessing: Processes live camera feeds to extract frames for ML-based analysis.
-ML Model 1: Detects vehicles and captures relevant details.
-License Plate Recognition: Uses Paddle OCR to extract license plate information.
-Database Match:
-Workers match data against the database.
-If a match is found, actionable insights are derived.
+### Backend
+- Python
+- Flask
+- Boto3
+- Celery (for worker management)
 
-Alerts: Triggers alerts via appropriate channels (user/police/hospital).
-Periodic Check: Worker 2 ensures all lost vehicles are re-evaluated every 6 hours.
+### Machine Learning
+- TensorFlow
+- YOLO
+- Paddle OCR
 
-Technology Stack
-Backend: Python, Flask, Boto3
-Machine Learning: TensorFlow, YOLO, Paddle OCR
-Database: AWS DynamoDB
-Cloud Storage: AWS S3
-Frontend: React.js
-Messaging: Twilio API
-Workers: Celery for distributed task management
+### Cloud Infrastructure
+- AWS DynamoDB
+- AWS S3
 
-Folder Structure
+### Frontend
+- React.js
 
-Edit
+### Communication
+- Twilio API
+
+## Project Structure
+```
 ├── backend/
 │   ├── app.py               # Main backend application
 │   ├── workers/
@@ -71,46 +73,74 @@ Edit
 │   ├── model2/              # ML Model 2 for incident analysis
 ├── scripts/
 │   ├── preprocess.py        # Preprocessing scripts
-├── README.md
-Installation
-Clone the repository:
+```
 
-bash
-git clone https://github.com/your-username/lost-vehicle-tracking-system.git
-cd lost-vehicle-tracking-system
-Install dependencies:
+## Installation
 
-Backend:
-bash
+1. Clone the repository:
+```bash
+git clone https://github.com/your-username/SecureSight-2.git
+cd SecureSight-2
+```
+
+2. Install backend dependencies:
+```bash
 pip install -r backend/requirements.txt
-Frontend:
-bash
+```
 
-
+3. Install frontend dependencies:
+```bash
 cd frontend
 npm install
-Configure AWS:
+```
 
-Set up AWS DynamoDB and S3.
-Update the configuration in backend/config.py.
-Run the application:
+4. Configure AWS:
+   - Set up AWS DynamoDB and S3
+   - Update configuration in `backend/config.py`
 
-Start the backend:
-bash
+## Running the Application
+
+1. Start the backend server:
+```bash
 python backend/app.py
-Start the frontend:
-bash
+```
 
+2. Launch the frontend:
+```bash
 cd frontend
 npm start
-Start workers:
+```
 
-bash
+3. Start the workers:
+```bash
 celery -A backend.workers.worker1 worker --loglevel=info
 celery -A backend.workers.worker2 worker --loglevel=info
 celery -A backend.workers.worker3 worker --loglevel=info
-Contributing
-Contributions are welcome! Please fork the repository and submit a pull request with your changes. Ensure all code is properly documented and follows best practices.
+```
 
-License
-This project is licensed under the MIT License. See the LICENSE file for more details.
+## Workflow
+
+1. **Preprocessing**: Process live camera feeds for ML analysis
+2. **Vehicle Detection**: ML Model 1 identifies vehicles and extracts details
+3. **License Plate Recognition**: Paddle OCR processes plate information
+4. **Database Matching**: Workers check against existing database entries
+5. **Alert Generation**: System triggers appropriate notifications based on matches
+6. **Periodic Updates**: Regular re-evaluation of all cases every 6 hours
+
+## Contributing
+
+We welcome contributions! Please follow these steps:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Support
+
+For support, please open an issue in the GitHub repository or contact the maintainers directly.
